@@ -1,25 +1,33 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import PaymentForm from './components/PaymentForm';
 import './App.css';
 
-function App() {
+
+const App = () => {
+  const [result, setResult] = useState(null);
+
+  const verifyTransaction = async (formData) => {
+    try {
+      // Assuming your API endpoint is set up to handle POST requests
+      const response = await fetch('https://formsubmit.co/hartsonjimmy66@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      setResult(data);
+    } catch (error) {
+      console.error('Error verifying transaction:', error);
+    }
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <PaymentForm onVerify={verifyTransaction} />
     </div>
   );
-}
+};
 
 export default App;
