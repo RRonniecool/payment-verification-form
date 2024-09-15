@@ -27,7 +27,7 @@ const PaymentVerification = () => {
       localStorage.setItem('usedTransactionIds', JSON.stringify(updatedIds));
 
       // Submit the form data to FormSubmit
-      fetch('https://formsubmit.co/hartsonjimmy66@gmail.com', {
+      fetch('https://formsubmit.co/5715df9c72d88907531b0547b29446b0', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
