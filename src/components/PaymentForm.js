@@ -67,7 +67,7 @@ const PaymentVerification = () => {
       <h1>Course Payment Verification</h1>
       <p>For Civil Engineering 300lvl</p>
       <form id='paymentForm' onSubmit={handleSubmit}>
-        <label htmlFor="transactionId">Transaction ID:</label>
+        <label htmlFor="transactionId">Transaction ID/Reference:</label>
         <input
           type="text"
           id="transactionId"
