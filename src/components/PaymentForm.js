@@ -109,7 +109,7 @@ const PaymentVerification = () => {
 
         {/* reCAPTCHA widget */}
         <ReCAPTCHA
-          sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY} // Replace with your site key
+          sitekey="6LfDE0UqAAAAAJnEG3XXpWm_khq6vuaHooeVpl-l" // Replace with your site key
           onChange={handleRecaptchaChange}
         />
         <br />
