@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 const PaymentVerification = () => {
   const [transactionId, setTransactionId] = useState('');
@@ -7,6 +8,7 @@ const PaymentVerification = () => {
   const [courseCode, setCourseCode] = useState('');
   const [usedTransactionIds, setUsedTransactionIds] = useState([]);
   const [resultMessage, setResultMessage] = useState('');
+  const [recaptchaToken, setRecaptchaToken] = useState(null);
 
   // Load usedTransactionIds from localStorage on component mount
   useEffect(() => {
@@ -14,14 +16,22 @@ const PaymentVerification = () => {
     setUsedTransactionIds(storedIds);
   }, []);
 
+  // Handle reCAPTCHA verification
+  const handleRecaptchaChange = (token) => {
+    setRecaptchaToken(token);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (!recaptchaToken) {
+      setResultMessage('Please complete the CAPTCHA');
+      return;
+    }
+
     if (usedTransactionIds.includes(transactionId)) {
-      // If the transaction ID has already been used, display an error message
       setResultMessage('Error: This Transaction ID has already been used.');
     } else {
-      // If the transaction ID is new, save it and allow submission
       const updatedIds = [...usedTransactionIds, transactionId];
       setUsedTransactionIds(updatedIds);
       localStorage.setItem('usedTransactionIds', JSON.stringify(updatedIds));
@@ -37,6 +47,7 @@ const PaymentVerification = () => {
           fullName,
           regNumber,
           courseCode,
+          'g-recaptcha-response': recaptchaToken, // Send reCAPTCHA token
         }),
       })
         .then(() => setResultMessage('Payment Verified and Submitted Successfully!'))
@@ -47,6 +58,7 @@ const PaymentVerification = () => {
       setFullName('');
       setRegNumber('');
       setCourseCode('');
+      setRecaptchaToken(null); // Reset reCAPTCHA token
     }
   };
 
@@ -95,7 +107,16 @@ const PaymentVerification = () => {
         />
         <br /><br />
 
-        <button type="submit">Verify and Submit</button>
+        {/* reCAPTCHA widget */}
+        <ReCAPTCHA
+          sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY} // Replace with your site key
+          onChange={handleRecaptchaChange}
+        />
+        <br />
+
+        <button type="submit" disabled={!recaptchaToken}>
+          Verify and Submit
+        </button>
       </form>
 
       <div id="result">{resultMessage}</div>
