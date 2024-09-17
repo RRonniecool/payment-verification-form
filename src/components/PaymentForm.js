@@ -23,44 +23,46 @@ const PaymentVerification = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+  
     if (!recaptchaToken) {
       setResultMessage('Please complete the CAPTCHA');
       return;
     }
-
-    if (usedTransactionIds.includes(transactionId)) {
-      setResultMessage('Error: This Transaction ID has already been used.');
-    } else {
-      const updatedIds = [...usedTransactionIds, transactionId];
-      setUsedTransactionIds(updatedIds);
-      localStorage.setItem('usedTransactionIds', JSON.stringify(updatedIds));
-
-      // Submit the form data to FormSubmit
-      fetch('https://formsubmit.co/5715df9c72d88907531b0547b29446b0', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-          transactionId,
-          fullName,
-          regNumber,
-          courseCode,
-          'g-recaptcha-response': recaptchaToken, // Send reCAPTCHA token
-        }),
+  
+    // Check if transaction ID is already used
+    fetch('https://verif-in-nodejs-production.up.railway.app/check-transaction', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ transactionId }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.message === 'Transaction ID already used') {
+          setResultMessage('Error: This Transaction ID has already been used.');
+        } else {
+          // Submit the form data to FormSubmit
+          fetch('https://formsubmit.co/5715df9c72d88907531b0547b29446b0', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+              transactionId,
+              fullName,
+              regNumber,
+              courseCode,
+              'g-recaptcha-response': recaptchaToken,
+            }),
+          })
+            .then(() => setResultMessage('Payment Verified and Submitted Successfully!'))
+            .catch(() => setResultMessage('Error submitting the form. Please try again.'));
+        }
       })
-        .then(() => setResultMessage('Payment Verified and Submitted Successfully!'))
-        .catch(() => setResultMessage('Error submitting the form. Please try again.'));
-
-      // Optionally reset form fields
-      setTransactionId('');
-      setFullName('');
-      setRegNumber('');
-      setCourseCode('');
-      setRecaptchaToken(null); // Reset reCAPTCHA token
-    }
+      .catch(() => setResultMessage('Error: Could not verify transaction ID.'));
   };
+  
 
   return (
     <div>
