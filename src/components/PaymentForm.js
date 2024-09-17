@@ -29,8 +29,8 @@ const PaymentVerification = () => {
       return;
     }
   
-    // Check if transaction ID is already used
-    fetch('https://verif-in-nodejs-production.up.railway.app/check-transaction', {
+    // Step 1: Check if transaction ID is already used
+    fetch('http://localhost:5000/check-transaction', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -39,11 +39,11 @@ const PaymentVerification = () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.message === 'Transaction ID already used') {
+        if (data.message === 'Transaction ID already exit') {
           setResultMessage('Error: This Transaction ID has already been used.');
         } 
 
-          // Submit the form data to FormSubmit
+          // Step 2: 1Submit the form data to FormSubmit
           fetch('https://formsubmit.co/5715df9c72d88907531b0547b29446b0', {
             method: 'POST',
             headers: {
