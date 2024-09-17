@@ -41,7 +41,8 @@ const PaymentVerification = () => {
       .then((data) => {
         if (data.message === 'Transaction ID already used') {
           setResultMessage('Error: This Transaction ID has already been used.');
-        } else {
+        } 
+
           // Submit the form data to FormSubmit
           fetch('https://formsubmit.co/5715df9c72d88907531b0547b29446b0', {
             method: 'POST',
@@ -58,7 +59,7 @@ const PaymentVerification = () => {
           })
             .then(() => setResultMessage('Payment Verified and Submitted Successfully!'))
             .catch(() => setResultMessage('Error submitting the form. Please try again.'));
-        }
+
       })
       .catch(() => setResultMessage('Error: Could not verify transaction ID.'));
   };
