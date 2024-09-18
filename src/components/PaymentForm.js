@@ -30,7 +30,7 @@ const PaymentVerification = () => {
     }
   
     // Step 1: Check if transaction ID is already used
-    fetch('http://localhost:5000/check-transaction', {
+    fetch('https://verif-in-nodejs-production.up.railway.app/check-transaction', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
