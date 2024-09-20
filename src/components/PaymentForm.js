@@ -9,6 +9,7 @@ const PaymentVerification = () => {
   const [usedTransactionIds, setUsedTransactionIds] = useState([]);
   const [resultMessage, setResultMessage] = useState('');
   const [recaptchaToken, setRecaptchaToken] = useState(null);
+  const [messageColor, setMessageColor] = useState('');
 
   // Load usedTransactionIds from localStorage on component mount
   useEffect(() => {
@@ -41,10 +42,11 @@ const PaymentVerification = () => {
       .then((data) => {
         if (data.message === 'Transaction ID already exit') {
           setResultMessage('Error: This Transaction ID has already been used.');
+          setMessageColor('red');
         } 
 
-          // Step 2: 1Submit the form data to FormSubmit
-          fetch('https://formsubmit.co/5715df9c72d88907531b0547b29446b0', {
+          // Step 2: 1Submit the form data to FormSpree.com
+          fetch('https://formspree.io/f/mldrybrn', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
@@ -62,6 +64,7 @@ const PaymentVerification = () => {
 
       })
       .catch(() => setResultMessage('Error: Could not verify transaction ID.'));
+      setMessageColor('red');
   };
   
 
@@ -122,7 +125,7 @@ const PaymentVerification = () => {
         </button>
       </form>
 
-      <div id="result">{resultMessage}</div>
+      <div id="result" style={{ color: messageColor }}>{resultMessage}</div>
     </div>
   );
 };
