@@ -34,7 +34,6 @@ const PaymentVerification = () => {
     // Step 1: Check if transaction ID is already used
     fetch('https://verif-in-nodejs-production.up.railway.app/check-transaction', {
       method: 'POST',
-      mode: 'no-cors',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -42,14 +41,13 @@ const PaymentVerification = () => {
     })
     .then((response) => response.json())
     .then((data) => {
-      if (data.message === 'Transaction ID already exists') {
+      if (data.message === 'This Transaction ID has already been used.') {
         setResultMessage('Error: This Transaction ID has already been used.');
         setMessageColor('red');
       } else {
         // Step 2: Submit the form data to FormSpree.com
         fetch('https://formspree.io/f/mldrybrn', {
           method: 'POST',
-          mode: 'no-cors',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
