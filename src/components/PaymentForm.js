@@ -27,6 +27,7 @@ const PaymentVerification = () => {
   
     if (!recaptchaToken) {
       setResultMessage('Please complete the CAPTCHA');
+      setMessageColor('red');
       return;
     }
   
@@ -38,48 +39,51 @@ const PaymentVerification = () => {
       },
       body: JSON.stringify({ transactionId }),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.message === 'Transaction ID already exit') {
-          setResultMessage('Error: This Transaction ID has already been used.');
-          setMessageColor('red');
-        } 
-
-          // Step 2: 1Submit the form data to FormSpree.com
-          fetch('https://formspree.io/f/mldrybrn', {
-            method: 'POST',
-            // mode: 'no-cors',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-              transactionId,
-              fullName,
-              regNumber,
-              courseCode,
-              'g-recaptcha-response': recaptchaToken,
-            }),
-          })
-          .then(() => {
-            setResultMessage('Payment Verified and Submitted Successfully!');
-            setMessageColor('green'); 
-          })
-          .catch(() => {
-            setResultMessage('Error submitting the form. Please try again.');
-            setMessageColor('red'); 
-          });
-        
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.message === 'Transaction ID already exists') {
+        setResultMessage('Error: This Transaction ID has already been used.');
+        setMessageColor('red');
+      } else {
+        // Step 2: Submit the form data to FormSpree.com
+        fetch('https://formspree.io/f/mldrybrn', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams({
+            transactionId,
+            fullName,
+            regNumber,
+            courseCode,
+            'g-recaptcha-response': recaptchaToken,
+          }),
+        })
+        .then(() => {
+          setResultMessage('Payment Verified and Submitted Successfully!');
+          setMessageColor('green');
+          // Update usedTransactionIds and store in localStorage
+          const updatedIds = [...usedTransactionIds, transactionId];
+          setUsedTransactionIds(updatedIds);
+          localStorage.setItem('usedTransactionIds', JSON.stringify(updatedIds));
         })
         .catch(() => {
-          setResultMessage('Error: Could not verify transaction ID.');
-          setMessageColor('red'); 
+          setResultMessage('Error submitting the form. Please try again.');
+          setMessageColor('red');
         });
+      }
+    })
+    .catch(() => {
+      setResultMessage('Error: Could not verify transaction ID.');
+      setMessageColor('red');
+    });
+  };
 
   return (
     <div>
       <h1>Course Payment Verification</h1>
       <p>For Civil Engineering 300lvl</p>
-      <form id='paymentForm' onSubmit={handleSubmit}>
+      <form id="paymentForm" onSubmit={handleSubmit}>
         <label htmlFor="transactionId">Transaction ID/Reference:</label>
         <input
           type="text"
@@ -122,7 +126,7 @@ const PaymentVerification = () => {
 
         {/* reCAPTCHA widget */}
         <ReCAPTCHA
-          sitekey= {process.env.REACT_APP_RECAPTCHA_SITE_KEY} // Replace with your site key
+          sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY} // Replace with your site key
           onChange={handleRecaptchaChange}
         />
         <br />
