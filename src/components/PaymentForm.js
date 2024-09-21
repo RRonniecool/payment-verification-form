@@ -48,6 +48,7 @@ const PaymentVerification = () => {
           // Step 2: 1Submit the form data to FormSpree.com
           fetch('https://formspree.io/f/mldrybrn', {
             method: 'POST',
+            mode: 'no-cors',
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
             },
