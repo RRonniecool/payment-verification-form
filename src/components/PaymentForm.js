@@ -48,7 +48,7 @@ const PaymentVerification = () => {
           // Step 2: 1Submit the form data to FormSpree.com
           fetch('https://formspree.io/f/mldrybrn', {
             method: 'POST',
-            mode: 'no-cors',
+            // mode: 'no-cors',
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded',
             },
@@ -60,14 +60,20 @@ const PaymentVerification = () => {
               'g-recaptcha-response': recaptchaToken,
             }),
           })
-            .then(() => setResultMessage('Payment Verified and Submitted Successfully!'))
-            .catch(() => setResultMessage('Error submitting the form. Please try again.'));
-
-      })
-      .catch(() => setResultMessage('Error: Could not verify transaction ID.'));
-      setMessageColor('red');
-  };
-  
+          .then(() => {
+            setResultMessage('Payment Verified and Submitted Successfully!');
+            setMessageColor('green'); 
+          })
+          .catch(() => {
+            setResultMessage('Error submitting the form. Please try again.');
+            setMessageColor('red'); 
+          });
+        
+        })
+        .catch(() => {
+          setResultMessage('Error: Could not verify transaction ID.');
+          setMessageColor('red'); 
+        });
 
   return (
     <div>
