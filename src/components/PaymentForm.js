@@ -4,6 +4,7 @@ import ReCAPTCHA from 'react-google-recaptcha';
 const PaymentVerification = () => {
   const [transactionId, setTransactionId] = useState('');
   const [fullName, setFullName] = useState('');
+  const [Amount, setAmount] = useState('');
   const [regNumber, setRegNumber] = useState('');
   const [courseCode, setCourseCode] = useState('');
   const [usedTransactionIds, setUsedTransactionIds] = useState([]);
@@ -54,6 +55,7 @@ const PaymentVerification = () => {
           },
           body: new URLSearchParams({
             transactionId,
+            Amount,
             fullName,
             regNumber,
             courseCode,
@@ -82,8 +84,7 @@ const PaymentVerification = () => {
 
   return (
     <div>
-      <h1>Course Payment Verification</h1>
-      <p>For Civil Engineering 300lvl</p>
+      <h1>Course Payment Upload</h1>
       <form id="paymentForm" onSubmit={handleSubmit}>
         <label htmlFor="transactionId">Transaction ID/Reference:</label>
         <input
@@ -94,6 +95,22 @@ const PaymentVerification = () => {
           required
         />
         <br /><br />
+
+        <label htmlFor="Amount">Amount:</label> 
+        <input
+          type="text"
+          id="Amount"
+          value={Amount}
+          onKeyPress={(e) => {
+            if (!/[0-9]/.test(e.key)) {
+              e.preventDefault(); // Block non-numeric input
+            }
+          }}
+          onChange={(e) => setAmount(e.target.value)}
+          required
+        />
+        <br /><br />
+
 
         <label htmlFor="fullName">Full Name:</label>
         <input
@@ -110,6 +127,11 @@ const PaymentVerification = () => {
           type="text"
           id="regNumber"
           value={regNumber}
+          onKeyPress={(e) => {
+            if (!/[0-9]/.test(e.key)) {
+              e.preventDefault(); // Block non-numeric input
+            }
+          }}
           onChange={(e) => setRegNumber(e.target.value)}
           required
         />
